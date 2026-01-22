@@ -4,6 +4,8 @@ import { caller } from "@/trpc/server";
 export default async function Home() {
   await requireAuth();
 
+  const text = await caller.testAi();
+  console.log("Generated Text:", text);
   const workflows = await caller.getWorkflows();
   console.log("Workflows:", workflows);
 
