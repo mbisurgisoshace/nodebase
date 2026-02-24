@@ -124,9 +124,9 @@ export const AppSidebar = () => {
               tooltip={"Sign Out"}
               className="gap-x-4 h-10 px-4"
               onClick={async () => {
-                await queryClient.invalidateQueries({
-                  queryKey: ["subscription"],
-                });
+                // await queryClient.invalidateQueries({
+                //   queryKey: ["subscription"],
+                // });
 
                 authClient.signOut({
                   fetchOptions: {
