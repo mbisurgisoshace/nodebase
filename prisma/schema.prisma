@@ -98,16 +98,16 @@ enum NodeType {
 }
 
 model Node {
-  id        String   @id @default(cuid())
-  worflowId String
-  name      String
-  type      NodeType
-  position  Json
-  data      Json     @default("{}")
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  id         String   @id @default(cuid())
+  workflowId String
+  name       String
+  type       NodeType
+  position   Json
+  data       Json     @default("{}")
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
 
-  workflow          Workflow     @relation(fields: [worflowId], references: [id], onDelete: Cascade)
+  workflow          Workflow     @relation(fields: [workflowId], references: [id], onDelete: Cascade)
   inputConnections  Connection[] @relation("toNode")
   outputConnections Connection[] @relation("fromNode")
 
@@ -116,7 +116,7 @@ model Node {
 
 model Connection {
   id         String   @id @default(cuid())
-  worflowId  String
+  workflowId String
   fromNodeId String
   toNodeId   String
   fromOutput String   @default("main")
@@ -124,7 +124,7 @@ model Connection {
   createdAt  DateTime @default(now())
   updatedAt  DateTime @updatedAt
 
-  workflow Workflow @relation(fields: [worflowId], references: [id], onDelete: Cascade)
+  workflow Workflow @relation(fields: [workflowId], references: [id], onDelete: Cascade)
   fromNode Node     @relation("fromNode", fields: [fromNodeId], references: [id], onDelete: Cascade)
   toNode   Node     @relation("toNode", fields: [toNodeId], references: [id], onDelete: Cascade)
 

@@ -13,7 +13,7 @@ import { WorkflowNode } from "@/components/WorkflowNode";
 import { BaseHandle } from "@/components/react-flow/base-handle";
 import { BaseNode, BaseNodeContent } from "@/components/react-flow/base-node";
 
-interface BaseExecutionNodeProps extends NodeProps {
+interface BaseTriggerNodeProps extends NodeProps {
   name: string;
   status?: NodeStatus;
   description?: string;
@@ -23,7 +23,7 @@ interface BaseExecutionNodeProps extends NodeProps {
   onDoubleClick?: () => void;
 }
 
-export const BaseExecutionNode = memo(
+export const BaseTriggerNode = memo(
   ({
     id,
     name,
@@ -33,7 +33,7 @@ export const BaseExecutionNode = memo(
     description,
     onDoubleClick,
     status = "initial",
-  }: BaseExecutionNodeProps) => {
+  }: BaseTriggerNodeProps) => {
     const { setNodes, setEdges } = useReactFlow();
 
     const handleDelete = () => {
@@ -57,8 +57,16 @@ export const BaseExecutionNode = memo(
         onDelete={handleDelete}
         description={description}
       >
-        <NodeStatusIndicator status={status} variant="border">
-          <BaseNode status={status} onDoubleClick={onDoubleClick}>
+        <NodeStatusIndicator
+          status={status}
+          variant="border"
+          className="rounded-l-2xl"
+        >
+          <BaseNode
+            status={status}
+            className="rounded-l-2xl relative group"
+            onDoubleClick={onDoubleClick}
+          >
             <BaseNodeContent>
               {typeof Icon === "string" ? (
                 <Image src={Icon} alt={name} width={16} height={16} />
@@ -66,11 +74,6 @@ export const BaseExecutionNode = memo(
                 <Icon className="size-4 text-muted-foreground" />
               )}
               {children}
-              <BaseHandle
-                id={"target-1"}
-                type="target"
-                position={Position.Left}
-              />
               <BaseHandle
                 id={"source-1"}
                 type="source"
@@ -84,4 +87,4 @@ export const BaseExecutionNode = memo(
   },
 );
 
-BaseExecutionNode.displayName = "BaseExecutionNode";
+BaseTriggerNode.displayName = "BaseTriggerNode";
