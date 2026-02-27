@@ -1,6 +1,7 @@
 "use client";
 
 import {
+  Panel,
   addEdge,
   MiniMap,
   Controls,
@@ -14,20 +15,22 @@ import {
   type Connection,
   applyEdgeChanges,
   applyNodeChanges,
-  Panel,
 } from "@xyflow/react";
+import { useSetAtom } from "jotai";
 import { useState, useCallback } from "react";
 
-import { ErrorView, LoadingView } from "@/components/EntityComponents";
-import { useSuspenseWorkflow } from "@/features/workflows/hooks/use-workflows";
 import {
   Node as DbNode,
   Connection as DbConnection,
 } from "@/generated/prisma/client";
 
-import "@xyflow/react/dist/style.css";
-import { nodeComponents } from "@/config/node-components";
+import { editorAtom } from "../store/atoms";
 import { AddNodeButton } from "./AddNodeButton";
+import { nodeComponents } from "@/config/node-components";
+import { ErrorView, LoadingView } from "@/components/EntityComponents";
+import { useSuspenseWorkflow } from "@/features/workflows/hooks/use-workflows";
+
+import "@xyflow/react/dist/style.css";
 
 export const EditorLoading = () => {
   return <LoadingView message="Loading editor..." />;
@@ -59,6 +62,8 @@ const transformConnection = (connection: DbConnection): Edge => {
 export const Editor = ({ workflowId }: { workflowId: string }) => {
   const { data: workflow } = useSuspenseWorkflow(workflowId);
 
+  const setEditor = useSetAtom(editorAtom);
+
   const [nodes, setNodes] = useState<Node[]>(workflow.nodes.map(transformNode));
   const [edges, setEdges] = useState<Edge[]>(
     workflow.connections.map(transformConnection),
@@ -84,8 +89,14 @@ export const Editor = ({ workflowId }: { workflowId: string }) => {
     <div className="size-full">
       <ReactFlow
         fitView
+        snapToGrid
+        panOnScroll
         nodes={nodes}
         edges={edges}
+        selectionOnDrag
+        panOnDrag={false}
+        onInit={setEditor}
+        snapGrid={[10, 10]}
         onConnect={onConnect}
         nodeTypes={nodeComponents}
         onNodesChange={onNodesChange}
