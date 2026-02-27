@@ -5,6 +5,7 @@ import type { NodeExecutor } from "@/features/executions/types";
 type HttpRequestData = {
   body?: string;
   endpoint?: string;
+  variableName?: string;
   method?: "GET" | "POST" | "PUT" | "PATCH" | "DELETE";
 };
 
@@ -27,6 +28,9 @@ export const httpRequestExecutor: NodeExecutor<HttpRequestData> = async ({
     if (["POST", "PUT", "PATCH"].includes(method)) {
       if (data.body) {
         options.body = data.body;
+        options.headers = {
+          "Content-Type": "application/json",
+        };
       }
     }
 
@@ -36,13 +40,17 @@ export const httpRequestExecutor: NodeExecutor<HttpRequestData> = async ({
       ? await response.json()
       : await response.text();
 
-    return {
-      ...context,
+    const responsePayload = {
       httpResponse: {
         status: response.status,
         statusText: response.statusText,
         data: responseData,
       },
+    };
+
+    return {
+      ...context,
+      [data.variableName || nodeId]: responsePayload,
     };
   });
 
